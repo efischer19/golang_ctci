@@ -1,0 +1,10 @@
+Plans for chapter 0
+
+Before I get started with any actual questions, I want to make sure I understand go.
+
+To that end, I'll be writing some trivially simple programs in this dir.
+
+	-Hello World (already done with git setup thanks to https://golang.org/doc/code.html, in a separate location)
+	-FizzBuzz
+	-Fibonacci, to some reasonable amount of iterations
+	-something about concurrency, that's what go is all about right?
