@@ -2,7 +2,7 @@
 
 import "testing"
 
-func testAllUnique(t *testing.T) {
+func TestAllUnique(t *testing.T) {
 	cases := []struct {
 		in string
 		want bool
@@ -17,9 +17,9 @@ func testAllUnique(t *testing.T) {
 		if got1 != c.want {
 			t.Errorf("AllUniqueNaive(%q) == %q, want %q", c.in, got1, c.want)
 		}
-		got2 = AllUniqueSet(c.in)
+		got2 := AllUniqueSet(c.in)
 		if got2 != c.want {
-			t.Errorf("AllUniqueNaive(%q) == %q", want %q, c.in, got2, c.want)
+			t.Errorf("AllUniqueNaive(%q) == %q, want %q", c.in, got2, c.want)
 		}
 	}
 }
