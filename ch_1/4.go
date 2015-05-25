@@ -10,7 +10,7 @@ func SpaceEncode(input string) string {
 			if writeSpace {
 				buffer.WriteString("%20")
 			}
-			buffer.WriteString(string(c))
+			buffer.WriteRune(c)
 			ready = true
 			writeSpace = false
 		} else if ready {
