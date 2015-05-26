@@ -40,7 +40,7 @@ func TestRotate(t *testing.T) {
 
 	for _, c := range cases {
 		got := RotateImage(c.in)
-		if sliceEqual(got[:][:], c.want[:][:]) == false {
+		if sliceEqual32(got[:][:], c.want[:][:]) == false {
 			t.Errorf("Error! Results follow")
 			for i := 0; i < len(got); i++ {
 				fmt.Println(got[i])
@@ -52,7 +52,7 @@ func TestRotate(t *testing.T) {
 	}
 }
 
-func sliceEqual(a [][]int32, b [][]int32) bool {
+func sliceEqual32(a [][]int32, b [][]int32) bool {
 	for i := 0; i < len(a); i++ {
 		for j := 0; j < len(a); j++ {
 			if a[i][j] != b[i][j] {
