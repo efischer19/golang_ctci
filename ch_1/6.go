@@ -1,10 +1,14 @@
 package ctci_chapter1
 
-import "fmt"
-
 type coordPair struct {
-	x int
-	y int
+	row int
+	col int
+}
+
+type itrDef struct {
+	start int
+	lim int
+	dir int
 }
 
 func RotateImage(input [][]int32) [][]int32 {
@@ -13,96 +17,75 @@ func RotateImage(input [][]int32) [][]int32 {
 	//to give next x,y coordinate
 	//main thread receives these values, then calls swap on them
 
-	//for these defs:
-	//in form {x,y}
-	//1 means: start at 0, increment to limit
-	//-1 means: start at max, decrement to limit
-	//if same sign, x is major axis and has limit 1 further
-	//opposite sign: y is major axis and limit extends 1 further
-	quadrantDefs := []struct {
-		x int
-		y int
-	} {
+	quadrantDefs := []coordPair {
+		{0,0},
+		{0,1},
 		{1,1},
-		{-1,1},
-		{-1,-1},
-		{1,-1},
+		{1,0},
 	}
 
-	var quadLen = len(input)
+	inLen := len(input)
+
 	//now, swap in place:
 	//q[0],q[1]
 	//q[0],q[2]
 	//q[0],q[3]
 	for q:=1; q < 4; q++ {
 		c1, c2 := make(chan coordPair), make(chan coordPair)
-		go quadrantItr(quadrantDefs[0].x, quadrantDefs[0].y, quadLen, c1)
-		go quadrantItr(quadrantDefs[q].x, quadrantDefs[q].y, quadLen, c2)
+		go quadrantItr(quadrantDefs[0].row, quadrantDefs[0].col, inLen, c1)
+		go quadrantItr(quadrantDefs[q].row, quadrantDefs[q].col, inLen, c2)
 
-		for i:=0; i < int(quadLen/2)*int(quadLen/2 + quadLen%2); i++ {
+		iterations := int(inLen/2)
+		iterations *= (iterations+inLen%2)
+		for i:=0; i < iterations; i++ {
 			old := <-c1
 			knew := <-c2
-			fmt.Printf("Swapping %d,%d with %d,%d\n",old.x,old.y,knew.x,knew.y);
-			swap(old.x, old.y, knew.x, knew.y, input[:][:])
+			swap(old.row, old.col, knew.row, knew.col, input[:][:])
 		}
 	}
 
 	return input
 }
 
-func quadrantItr(x int, y int, max int, output chan<- coordPair) {
-	var out, in int
-	if x*y > 0 {
-		//x is outer
-		if x > 0 {
-			out = 0
-		} else {
-			out = max-1
-		}
+func quadrantItr(row int, col int, length int, output chan<- coordPair) {
+	colMajor := (row-col == 0)
+	defs := make([]itrDef,2)
+	defs[0] = makeDef(row, length, !colMajor)
+	defs[1] = makeDef(col, length, colMajor)
 
-		if y > 0 {
-			in = 0
-		} else {
-			in = max-1
+	if colMajor {
+		for j := defs[1].start; j != defs[1].lim; j+=defs[1].dir {
+			for i := defs[0].start; i != defs[0].lim; i+=defs[0].dir {
+				output <- coordPair{i, j}
+			}
 		}
 	} else {
-		//y is outer
-		if y > 0 {
-			out = 0
-		} else {
-			out = max-1
-		}
-
-		if x > 0 {
-			in = 0
-		} else {
-			in = max-1
-		}
-	}
-
-	lim := int(max/2)
-	limMod := max%2
-
-	outDir := out/(max-1)	//outDir is 1 (if desc) or 0 (if asc)
-	outLim := lim-outDir
-	outDir += (outDir-1)	//outDir is now either 1 or -1
-	outDir *= -1			//get the sign right
-
-	inDir := in/(max-1)
-	inLim := lim-inDir
-	inDir += (inDir-1)		//inDir is now either 1 or -1
-	inDir *= -1
-
-
-	for ; out != outLim+(limMod*outDir); out += outDir {
-		for inTemp := in; inTemp != inLim; inTemp += inDir {
-			if x*y > 0 {
-				output <- coordPair{inTemp,out}
-			} else {
-				output <- coordPair{out,inTemp}
+		for i := defs[0].start; i != defs[0].lim; i+=defs[0].dir {
+			for j := defs[1].start; j != defs[1].lim; j+=defs[1].dir {
+				output <- coordPair{i, j}
 			}
 		}
 	}
+}
+
+func makeDef(in int, length int, isMajor bool) itrDef {
+	var ret itrDef
+	if in == 0 {
+		ret.start = 0
+		ret.lim = int(length/2)
+		if isMajor {
+			ret.lim += length%2
+		}
+		ret.dir = 1
+	} else {
+		ret.start = length-1
+		ret.lim = int(length/2)-1
+		if !isMajor {
+			ret.lim += length%2
+		}
+		ret.dir = -1
+	}
+	return ret
 }
 
 func swap(x1 int, y1 int, x2 int, y2 int, array [][]int32) {

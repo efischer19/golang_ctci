@@ -1,0 +1,52 @@
+Consistent row/col references:
+	I've been having issues conflating my rows/columns, so this will be the reference for how it goes.
+
+Row comes first, then col.
+
+Map of 3x3:
+	00	01	02
+	10	11	12
+	20	21	22
+
+So when swapping quadrants, I'll do it like this:
+	-swap 00 with 01
+	-swap 00 with 11
+	-swap 00 with 10
+	-to handle odd numbers, I'll designate one axis as "major", which will go one further to cover the midpoint
+	-00 and 11 are col major, 01 and 10 are row major
+	
+	-so, given the above 3X3, I'll swap like this:
+	-first: quad 00 with 01
+		-source: 	{00 01}
+			-col major, 1x2 grid
+		-dest:	{02	12}
+			-row major, 2x1 grid
+		-result after swap:
+			02	12	00
+			10	11	01
+			20	21	22
+	-second: quad 00 with quad 11
+		-source:	{02 12} col major
+		-dest:	{22	21} col major
+		-result:
+			22	21	00
+			10	11	01
+			20	12	02
+	-third: quad 00 with quad 10
+		-source:	{22	21}
+		-dest:		{20	10}
+		-result:
+			20	10	00
+			21	11	01
+			22	12	02
+
+Boom, the input has been rotated 90 degrees in-place.
+From here on, now more references to "x" or "y", that's confusing things. "row" and "col" instead.
+
+Quad defs:
+	-sum to binary 0 (00 and 11) - col major
+		-else row major
+	-if size of inpt grid %2 == 0, quads are square not rectangular
+	-row/col 0: start at 0, go up to mid
+		-else row/col 1: start at max, go down to mid
+	-whichever of row or col is major is outer iteration loop
