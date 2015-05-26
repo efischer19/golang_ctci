@@ -12,6 +12,7 @@ func TestIsRotation(t *testing.T) {
 		{"erbottlewat","waterbottle", true},
 		{"meowmeowmeow", "meowmeow", false},
 		{"abcd", "efgh", false},
+		{"","",true},
 	}
 
 	for _, c := range cases {
