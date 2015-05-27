@@ -20,7 +20,7 @@ func RemoveDupes(n Node) Node {
 		 if datas[cur.next.data] {
 			cur.next = cur.next.next
 		} else {
-			datas[cur.next] = true
+			datas[cur.next.data] = true
 		}
 	}
 	return n
