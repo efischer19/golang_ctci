@@ -13,13 +13,17 @@ func TestRemoveDupes(t *testing.T) {
 
 	for _, c := range cases {
 		inNode, wantNode := NodeSetupSmart(c.in), NodeSetupSmart(c.want)
-		got1 := RemoveDupesNaive(inNode)
-		if !got1.ListEquals(c.want) {
-			t.Errorf("RemoveDupesNaive(%q) == %q, want %q", c.in.ListString(), got1.ListString(), c.want.ListString())
+		priorString := inNode.ListString()
+		inNode.RemoveDupesNaive()
+		if !inNode.ListEquals(wantNode) {
+			t.Errorf("RemoveDupesNaive(%q) == %q, want %q", priorString, inNode.ListString(), wantNode.ListString())
 		}
-		got2 := RemoveDupes(inNode)
-		if !got2.ListEquals(c.want) {
-			t.Errorf("RemoveDupes(%q) == %q, want %q", c.in.ListString(), got2.ListString(), c.want.ListString())
+		
+		inNode = NodeSetupSmart(c.in)
+		priorString = inNode.ListString()
+		inNode.RemoveDupes()
+		if !inNode.ListEquals(wantNode) {
+			t.Errorf("RemoveDupes(%q) == %q, want %q", priorString, inNode.ListString(), wantNode.ListString())
 		}
 	}
 }
