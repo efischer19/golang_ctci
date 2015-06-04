@@ -12,16 +12,21 @@ type Node struct {
 }
 
 //exporting accessors for use in later chapters
-func (n *Node) Next() *Node {
+func (n Node) Next() *Node {
 	return n.next
 }
 
-func (n *Node) Data() int {
+func (n Node) Data() int {
 	return n.data
 }
 
 func CreateNode(next *Node, data int) Node{
 	return Node{next, data}
+}
+
+//and one setter too
+func (n *Node) SetNext(newNext *Node) {
+	n.next = newNext
 }
 
 func (oldNode *Node) Append(newData int) {
