@@ -51,8 +51,8 @@ func NodeSetupSmart(input []int) Node {
 }
 
 func (oldNode Node) ListEquals(comp Node) bool {
-	var a, b *Node
-	for a, b := &oldNode, &comp; a != nil && b != nil; a, b = a.next, b.next {
+	a, b := &oldNode, &comp
+	for ; a != nil && b != nil; a, b = a.next, b.next{
 		if a.data != b.data {
 			return false
 		}
