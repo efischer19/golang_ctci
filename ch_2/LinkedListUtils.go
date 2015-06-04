@@ -11,6 +11,19 @@ type Node struct {
 	data int
 }
 
+//exporting accessors for use in later chapters
+func (n *Node) Next() *Node {
+	return n.next
+}
+
+func (n *Node) Data() int {
+	return n.data
+}
+
+func CreateNode(next *Node, data int) Node{
+	return Node{next, data}
+}
+
 func (oldNode *Node) Append(newData int) {
 	newNode :=  Node{nil, newData}
 	newNode.next = oldNode.next
