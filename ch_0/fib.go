@@ -12,12 +12,9 @@ func main() {
 		panic(err)
 	}
 	var fib1, fib2 int64 = 0, 1
-	fmt.Println(fib1)
-	fmt.Println(fib2)
+	fmt.Println(fib1, fib2)
 	for i := 1; int64(i) < maxItrs; i++ {
-		temp := fib1 + fib2
-		fib1 = fib2
-		fib2 = temp
+		fib1, fib2 = fib2, fib1+fib2
 		fmt.Println(fib2)
 	}
 }
